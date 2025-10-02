@@ -5,12 +5,21 @@ This template should help get you started developing with Vue 3 in Vite.
 ## Requirement
 
 - Node >= 18
+- pastikan aplikasi backend sudah dijalankan
 
 ## Customize configuration
 
 See [Vite Configuration Reference](https://vite.dev/config/).
 
 ## Project Setup
+
+### init env file
+
+```sh
+cp .env.example .env
+```
+
+### install dependencies
 
 ```sh
 npm install
@@ -20,18 +29,6 @@ npm install
 
 ```sh
 npm run dev
-```
-
-### Compile and Minify for Production
-
-```sh
-npm run build
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
 ```
 
 ### Login & akses
