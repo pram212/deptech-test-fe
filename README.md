@@ -27,7 +27,7 @@ npm run dev
 
 ### Login & akses
 
-Buka http://localhost:5713
+Buka http://localhost:5173
 
 Login dengan
 Email : admin@example.com
