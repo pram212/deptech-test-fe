@@ -13,12 +13,6 @@ See [Vite Configuration Reference](https://vite.dev/config/).
 
 ## Project Setup
 
-### init env file
-
-```sh
-cp .env.example .env
-```
-
 ### install dependencies
 
 ```sh
