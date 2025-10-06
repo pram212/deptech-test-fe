@@ -22,10 +22,8 @@ export const useAuthStore = defineStore('auth', {
       this.user = res.data
     },
     async logout() {
-      await api.post('/logout', {}, { headers: { Authorization: `Bearer ${this.token}` } })
       this.user = null
       this.token = null
-
       localStorage.removeItem('token')
       delete api.defaults.headers.common['Authorization']
     },

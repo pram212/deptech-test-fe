@@ -11,6 +11,9 @@ import Swal from 'sweetalert2'
 import { useToast } from 'vue-toastification'
 import { useAuthStore } from './auth'
 import { reactive } from 'vue'
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
+
 const toast = useToast()
 
 export const useProductStore = defineStore('product', {
@@ -36,6 +39,7 @@ export const useProductStore = defineStore('product', {
       }
     },
     async addProduct(data) {
+      NProgress.start()
       for (const key in this.validationErrors) delete this.validationErrors[key]
       try {
         const authStore = useAuthStore()
@@ -52,6 +56,7 @@ export const useProductStore = defineStore('product', {
       }
     },
     async editProduct(id, data) {
+      NProgress.start()
       try {
         for (const key in this.validationErrors) delete this.validationErrors[key]
         const authStore = useAuthStore()

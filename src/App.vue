@@ -3,7 +3,7 @@
     <input id="my-drawer-3" type="checkbox" class="drawer-toggle" />
     <div class="drawer-content flex flex-col">
       <!-- Navbar -->
-      <div class="navbar bg-base-300 w-full">
+      <div class="navbar bg-base-100 w-full">
         <div class="flex-none lg:hidden">
           <label for="my-drawer-3" aria-label="open sidebar" class="btn btn-square btn-ghost">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -14,13 +14,23 @@
         </div>
         <div class="mx-2 flex-1 px-2">Deptech Technical Test</div>
         <div class="hidden flex-none lg:block">
-          <ul class="menu menu-horizontal" v-if="auth.user">
+          <ul class="menu menu-horizontal space-x-2" v-if="auth.user">
             <!-- Navbar menu content here -->
-            <li><router-link to="/dashboard">Home</router-link></li>
-            <li><router-link to="/products">Produk</router-link></li>
-            <li><router-link to="/users">Admin</router-link></li>
-            <li><router-link to="/product-categories">Kategori Produk</router-link></li>
-            <li><router-link to="/transactions">Transaksi</router-link></li>
+            <li><router-link to="/dashboard" :class="{ 'bg-primary': $route.path == '/dashboard' }">Home</router-link>
+            </li>
+            <li>
+              <router-link to="/products"
+                :class="{ 'bg-primary': $route.path.includes('/products') }">Produk</router-link>
+            </li>
+            <li>
+              <router-link to="/users" :class="{ 'bg-primary': $route.path.includes('/users') }">Admin</router-link>
+            </li>
+            <li>
+              <router-link to="/product-categories"
+                :class="{ 'bg-primary': $route.path.includes('/product-categories') }">Kategori Produk</router-link>
+            </li>
+            <li><router-link to="/transactions"
+                :class="{ 'bg-primary': $route.path.includes('/transactions') }">Transaksi</router-link></li>
             <li>
               <button type="button" class="btn btn-error btn-sm ml-3" @click="logout">Logout</button>
             </li>
@@ -28,8 +38,10 @@
         </div>
       </div>
       <!-- Page content here -->
-      <div class="py-6 px-4">
-        <RouterView />
+      <div class="py-6 px-4 bg-base-300 min-h-screen">
+        <div class="container bg-base-100 rounded-md">
+          <RouterView />
+        </div>
       </div>
     </div>
     <div class="drawer-side">

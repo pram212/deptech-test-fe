@@ -8,6 +8,8 @@ import {
 import { useAuthStore } from './auth'
 import { reactive } from 'vue'
 import { useToast } from 'vue-toastification'
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
 
 const toast = useToast()
 
@@ -45,6 +47,7 @@ export const useTransactionStore = defineStore('transaction', {
     },
 
     async addTransaction(data) {
+      NProgress.start()
       // reset validation errors
       for (const key in this.validationErrors) delete this.validationErrors[key]
       try {
@@ -52,6 +55,7 @@ export const useTransactionStore = defineStore('transaction', {
         await createTransaction(data, authStore.token)
         toast.success('Transaction created successfully!')
       } catch (err) {
+        NProgress.done()
         if (err.response?.status === 422) {
           Object.assign(this.validationErrors, err.response.data.errors || {})
         } else {

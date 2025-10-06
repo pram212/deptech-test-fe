@@ -4,56 +4,69 @@
       <h1 class="card-title">{{ isEdit ? "Edit Product" : "Create Product" }}</h1>
       <div class="my-3 min-h-screen">
         <form @submit.prevent="submit" enctype="multipart/form-data" class="grid grid-cols-2 gap-4">
-          <fieldset class="fieldset">
-            <legend class="fieldset-legend">Nama Produk</legend>
-            <input type="text" class="input w-full" v-model="form.name" placeholder="Type here" />
-            <div v-if="productStore.validationErrors.name" class="text-error text-sm">
-              {{ productStore.validationErrors.name[0] }}
-            </div>
-          </fieldset>
 
-          <fieldset class="fieldset">
-            <legend class="fieldset-legend">Kategori Produk</legend>
-            <select class="select w-full" v-model="form.product_category_id">
-              <option value="" disabled>Select Category</option>
-              <option v-for="category in productCategories" :key="category.id" :value="category.id">
-                {{ category.name }}
-              </option>
-            </select>
-            <div v-if="productStore.validationErrors.product_category_id" class="text-error text-sm">
-              {{ productStore.validationErrors.product_category_id[0] }}
-            </div>
-          </fieldset>
+          <div>
+            <fieldset class="fieldset">
+              <legend class="fieldset-legend">Nama Produk</legend>
+              <input type="text" class="input w-full" v-model="form.name" placeholder="Type here" />
+              <div v-if="productStore.validationErrors.name" class="text-error text-sm">
+                {{ productStore.validationErrors.name[0] }}
+              </div>
+            </fieldset>
 
-          <fieldset class="fieldset">
-            <legend class="fieldset-legend">Deskripsi Produk</legend>
-            <textarea class="textarea" v-model="form.description" placeholder="Type here"></textarea>
-            <div v-if="productStore.validationErrors.description" class="text-error text-sm">
-              {{ productStore.validationErrors.description[0] }}
-            </div>
-          </fieldset>
+            <fieldset class="fieldset">
+              <legend class="fieldset-legend">Kategori Produk</legend>
+              <select class="select w-full" v-model="form.product_category_id">
+                <option value="" disabled>Select Category</option>
+                <option v-for="category in productCategories" :key="category.id" :value="category.id">
+                  {{ category.name }}
+                </option>
+              </select>
+              <div v-if="productStore.validationErrors.product_category_id" class="text-error text-sm">
+                {{ productStore.validationErrors.product_category_id[0] }}
+              </div>
+            </fieldset>
 
-          <fieldset class="fieldset">
-            <legend class="fieldset-legend">Stock Produk</legend>
-            <input type="number" class="input" v-model="form.stock" placeholder="Stock" />
-            <div v-if="productStore.validationErrors.stock" class="text-error text-sm">
-              {{ productStore.validationErrors.stock[0] }}
-            </div>
-          </fieldset>
+            <fieldset class="fieldset">
+              <legend class="fieldset-legend">Deskripsi Produk</legend>
+              <textarea class="textarea" v-model="form.description" placeholder="Type here"></textarea>
+              <div v-if="productStore.validationErrors.description" class="text-error text-sm">
+                {{ productStore.validationErrors.description[0] }}
+              </div>
+            </fieldset>
 
-          <fieldset class="fieldset">
-            <legend class="fieldset-legend">Image Produk</legend>
-            <input type="file" @change="handleFileChange" />
-            <div v-if="productStore.validationErrors.image" class="text-error text-sm">
-              {{ productStore.validationErrors.image[0] }}
-            </div>
-          </fieldset>
+            <fieldset class="fieldset">
+              <legend class="fieldset-legend">Stock Produk</legend>
+              <input type="number" class="input" v-model="form.stock" placeholder="Stock" />
+              <div v-if="productStore.validationErrors.stock" class="text-error text-sm">
+                {{ productStore.validationErrors.stock[0] }}
+              </div>
+            </fieldset>
 
-          <br />
-          <div class="col-spa-2 space-x-2">
-            <button type="submit" class="btn btn-primary">{{ isEdit ? 'Update' : 'Simpan' }}</button>
+            <fieldset class="fieldset">
+              <legend class="fieldset-legend">Upload Foto</legend>
+              <input type="file" @change="handleFileChange" class="cursor-pointer" />
+              <div v-if="productStore.validationErrors.image" class="text-error text-sm">
+                {{ productStore.validationErrors.image[0] }}
+              </div>
+            </fieldset>
+
+          </div>
+
+          <div class="flex justify-center">
+            <div class="avatar">
+              <div class="w-auto h-72 rounded">
+                <img :src="imagePrev" alt="foto produk">
+              </div>
+            </div>
+          </div>
+
+          <div class="col-span-2 space-x-2">
+            <div class="divider"></div>
+            <button type="submit" class="btn btn-primary" :disabled="saving">{{ isEdit ? 'Update' : 'Simpan' }}</button>
             <router-link to="/products" class="btn btn-secondary">Batal</router-link>
           </div>
+
         </form>
       </div>
     </div>
@@ -69,6 +82,8 @@ const route = useRoute()
 const router = useRouter()
 const productStore = useProductStore()
 const isEdit = ref(false)
+const saving = ref(false)
+const imagePrev = ref(null)
 
 const productCategories = ref([])
 
@@ -93,6 +108,7 @@ onMounted(async () => {
   if (id) {
     isEdit.value = true
     const product = await productStore.fetchProduct(id)
+    imagePrev.value = product.data.image_url ?? '/empty-img.png'
     form.value = {
       id: product.data.id,
       name: product.data.name || '',
@@ -105,6 +121,7 @@ onMounted(async () => {
 })
 
 const submit = async () => {
+  saving.value = true
   try {
     const formData = new FormData()
     formData.append('name', form.value.name)
@@ -120,10 +137,10 @@ const submit = async () => {
     } else {
       await productStore.addProduct(formData)
     }
-
     router.push('/products')
-
+    saving.value = false
   } catch (err) {
+    saving.value = false
     console.error('Error saving product:', err)
   }
 }

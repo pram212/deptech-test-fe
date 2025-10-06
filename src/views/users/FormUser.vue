@@ -65,7 +65,7 @@
         </fieldset>
 
         <div class="space-x-2 col-span-2">
-          <button type="submit" class="btn btn-primary">{{ isEdit ? 'Update' : 'Simpan' }}</button>
+          <button type="submit" class="btn btn-primary" :disabled="saving">{{ isEdit ? 'Update' : 'Simpan' }}</button>
           <router-link to="/users" class="btn btn-secondary">Batal</router-link>
         </div>
       </form>
@@ -85,6 +85,8 @@ const emit = defineEmits(['saved', 'cancel'])
 
 const userStore = useUserStore()
 const isEdit = ref(false)
+const saving = ref(false)
+
 
 const form = ref({
   first_name: '',
@@ -118,13 +120,16 @@ onMounted(async () => {
 
 const submit = async () => {
   try {
+    saving.value = true
     if (isEdit.value) {
       await userStore.editUser(form.value.id, form.value)
     } else {
       await userStore.addUser(form.value)
     }
     router.push('/users')
+    saving.value = false
   } catch (err) {
+    saving.value = false
     // error sudah ditangani di store
     console.error('Error saving user:', err)
   }

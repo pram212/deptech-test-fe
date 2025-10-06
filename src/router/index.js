@@ -1,6 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
+
 const routes = [
   {
     path: '/login',
@@ -105,13 +108,13 @@ const router = createRouter({
 
 // Route guard
 router.beforeEach(async (to, from, next) => {
+  NProgress.start()
   const auth = useAuthStore()
-
   if (auth.token && !auth.user) {
     try {
       await auth.getUser()
     } catch (err) {
-      auth.logout()
+      await auth.logout()
     }
   }
 
@@ -122,6 +125,10 @@ router.beforeEach(async (to, from, next) => {
   } else {
     next()
   }
+})
+
+router.afterEach(() => {
+  NProgress.done()
 })
 
 export default router

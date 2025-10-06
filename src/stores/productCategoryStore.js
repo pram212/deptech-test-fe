@@ -10,6 +10,9 @@ import { useAuthStore } from './auth'
 import { reactive } from 'vue'
 import Swal from 'sweetalert2'
 import { useToast } from 'vue-toastification'
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
+
 const toast = useToast()
 
 export const useProductCategoryStore = defineStore('productCategory', {
@@ -33,12 +36,14 @@ export const useProductCategoryStore = defineStore('productCategory', {
       }
     },
     async addProductCategory(data) {
+      NProgress.start()
       for (const key in this.validationErrors) delete this.validationErrors[key]
       try {
         const authStore = useAuthStore()
         await createProductCategory(data, authStore.token)
         toast.success('Product category created successfully')
       } catch (err) {
+        NProgress.done()
         if (err.response?.status === 422) {
           // ambil error validasi dari backend
           Object.assign(this.validationErrors, err.response.data.errors || {})
@@ -49,12 +54,14 @@ export const useProductCategoryStore = defineStore('productCategory', {
       }
     },
     async editProductCategory(id, data) {
+      NProgress.start()
       try {
         for (const key in this.validationErrors) delete this.validationErrors[key]
         const authStore = useAuthStore()
         await updateProductCategory(id, data, authStore.token)
         toast.success('Product category updated successfully')
       } catch (err) {
+        NProgress.done()
         if (err.response?.status === 422) {
           // ambil error validasi dari backend
           Object.assign(this.validationErrors, err.response.data.errors || {})

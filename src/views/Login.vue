@@ -11,7 +11,8 @@
           </fieldset>
           <fieldset class="fieldset">
             <legend class="fieldset-legend">Password</legend>
-            <input v-model="password" type="password" class="input w-full" placeholder="Type here" />
+            <input v-model="password" type="password" class="input w-full" autocomplete="false"
+              placeholder="Type here" />
           </fieldset>
           <div class="divider"></div>
           <button type="submit" class="btn btn-primary" :disabled="loading">{{ loading ? "Login..." : "Login"
@@ -42,9 +43,7 @@ const submit = async () => {
     router.push({ name: 'dashboard' })
   } catch (err) {
     loading.value = false
-    console.log(err.response.data.message)
     toast.error("Login gagal " + err.response.data.message)
-
   }
 }
 </script>

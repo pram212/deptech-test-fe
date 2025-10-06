@@ -113,6 +113,7 @@ const submit = async () => {
       items: form.value.items.map(i => ({ product_id: i.product_id, quantity: i.quantity }))
     }
     await transactionStore.addTransaction(payload)
+
     router.push('/transactions')
   } catch (err) {
     console.error('Error submitting transaction:', err)
